@@ -1,0 +1,7 @@
+= errors_for @teacher
+= simple_form_for @teacher, html: { class: 'pure-form pure-form-stacked' } do |f|
+  = field_set_tag t("activerecord.models.teacher") do
+    = f.input :first_name
+    = f.input :last_name
+
+  = submit_for @teacher

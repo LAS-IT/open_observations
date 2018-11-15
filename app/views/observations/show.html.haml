@@ -1,0 +1,64 @@
+= show_page_for @observation, buttons: [ {label: 'Observer Has Confidence', action: confident_in_observation_path(@observation), if: (@observation.observation_recorded? && !@observation.observer_confidence?)} ]
+%dl.attributes
+  %dt Class
+  %dd= @observation.course.name
+  %dt Teacher
+  %dd= @observation.teacher
+  %dt Observer
+  %dd= @observation.user
+  %dt Students
+  %dd= @observation.number_of_students
+
+- if new_observation? 
+  - grid do
+    - column width: 1, of: 2 do
+      - label = @observation.interactions.any? ? t('modules.actions.observations.continue') : t('modules.actions.observations.start')
+      = primary_button label, start_observation_path(@observation)
+    - column width: 1, of: 2 do
+      = basic_button t('modules.actions.observations.record'), record_observation_path(@observation)
+- else
+  %h3.content-subhead Observation Summary
+  - grid do
+    - column width: 1, of: 2 do
+      %h5 Teacher Talk
+      = pie_chart @observation_summary.teacher_counts, height: '200px'
+    - column width: 1, of: 2 do
+      %h5 Student Talk
+      = pie_chart @observation_summary.students_counts, height: '200px'
+  - grid do
+    - column width: 1, of: 2 do
+      %h5 Grouping
+      = pie_chart @observation_summary.grouping_counts, height: '200px'
+    - column width: 1, of: 2 do
+      %h5 Primary Topic
+      = pie_chart @observation_summary.topic_counts, height: '200px'
+  - grid do
+    - column width: 1, of: 2 do
+      %h5 Time On Task
+      = pie_chart @observation_summary.on_task_counts, height: '200px'
+    - column width: 1, of: 2 do
+      %h5 Time Using Technology
+      = pie_chart @observation_summary.using_technology_counts, height: '200px'
+
+  %h3.content-subhead Observation Details
+  %table.pure-table
+    %thead
+      %tr
+        %th Start
+        %th End
+        %th Code String
+        %th On-Task
+        %th{colspan: 2} Using Technology
+    %tbody
+      - (0..39).to_a.in_groups_of(5).each do |block|
+        %tr
+          %td.number= block.first
+          %td.number= block.last
+          %td= @observation_summary.summary_code_string(from: block.first, to: block.last)
+          %td.boolean= @observation_summary.on_task(from: block.first, to: block.last)
+          %td.boolean= yes_no @observation_summary.using_technology?(from: block.first, to: block.last)
+          %td.action= link_to(text_icon(:pencil),edit_block_observation_interactions_path(@observation, block: (block.first/5)+1))
+        -# %tr
+        -#   %ul.list
+        -#     = content_tag_for :li, @observation_summary.snapshots(from: block.first, to: block.last) do |snapshot|
+        -#       = image_tag snapshot.media.url(:thumb)

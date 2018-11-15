@@ -1,0 +1,54 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+development:
+  adapter: postgresql
+  database: observations_development
+  pool: 5
+  timeout: 5000
+  username: observations
+  password: <%= ENV['DB_PASSWORD'] %>
+  host: localhost
+#  username: manager
+#  password: 'manager'
+#  host: docker.las.ch
+#  port: 5432
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+# test:
+#   adapter: postgresql
+#   database: prolearning_test
+#   pool: 5
+#   timeout: 5000
+#   username: postgres
+#   password: 'postgres'
+#   host: localhost
+test:
+  adapter: sqlite3
+  database: db/test.sqlite3
+  pool: 5
+  timeout: 5000
+
+# production:
+#  adapter: postgresql
+#  database: prolearning_production
+#  pool: 5
+#  timeout: 5000
+#  username: postgres
+#  password: 'postgres'
+#  host: localhost
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: observations_production
+  pool: 5
+  timeout: 5000
+  username: <%= ENV['DB_USERNAME'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+  host: <%= ENV['DB_HOST'] %>
+  port: 5432

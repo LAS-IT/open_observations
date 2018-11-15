@@ -1,0 +1,6 @@
+= errors_for @program
+= simple_form_for @program, html: { class: 'pure-form pure-form-stacked' } do |f|
+  = field_set_tag t('activerecord.models.program') do
+    = f.input :title
+
+  = submit_for @program

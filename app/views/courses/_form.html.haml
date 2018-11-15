@@ -1,0 +1,18 @@
+= errors_for @course
+= simple_form_for [@department, @course], html: { class: 'pure-form pure-form-stacked' } do |f|
+  = field_set_tag t('activerecord.models.course') do
+    = f.association :department, collection: Department.accessible_by(current_ability).by_name, input_html: { class: 'chzn' }, disabled: @department.present?
+    = f.input :name
+    = f.input :semester, collection: Course::SEMESTERS
+    = f.input :section
+  = field_set_tag t('activerecord.models.teacher') do
+    = f.association :teacher, collection: Teacher.accessible_by(current_ability).by_last_name, input_html: { class: 'chzn', data: { placeholder: t('simple_form.placeholders.course.teacher')} }
+    - if @course.new_record?
+      %hr
+      %p Or add a new teacher
+      = f.simple_fields_for :teacher do |t|
+        = t.input :first_name, required: false
+        = t.input :last_name, required: false
+        = t.input :school_id, as: :hidden
+
+  = submit_for @course, parent: @department

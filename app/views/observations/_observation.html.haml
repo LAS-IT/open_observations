@@ -1,0 +1,6 @@
+= content_tag_for :tr, observation do
+  %td= observation.user.full_name
+  %td.date= observation.observed_on.to_s(:iso)
+  %td.number= observation.number_of_students
+  %td.number= yes_no observation.observation_recorded?
+  %td.action= object_actions observation

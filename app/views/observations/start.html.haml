@@ -1,0 +1,180 @@
+- # FIXME: This code needs some refactoring, I'm not happy with myself but am pressing forward!
+- content_for :page_header do
+  %header.full_header.hidden
+    %p
+      Observation Time:
+      %span.minute= @start_minute
+      '
+      %span.second 00
+      "
+
+.content_subhead
+  %h3= t('modules.actions.observations.start')
+
+%hr
+
+- grid do
+  - column width: 1, of: 8 do
+    #timer
+      %h2= link_to text_icon(:play_circle, x2: true), '#', id: 'toggle_timer'
+  - column width: 7, of: 8 do
+    %h2.clock
+      %span.minute= @start_minute
+      '
+      %span.second 00
+      "
+
+    #progressbar
+
+%hr
+#interactions.waiting
+  #instructions
+    %em Press the play button to begin
+  - # Existing Interactions
+  - @observation.interactions.in_order.in_groups_of(5, false) do |interaction_group|
+    - if interaction_group.size.eql? 6 
+      - first_interaction = interaction_group.first
+      %div.upload_drop{id: "upload_drop_#{first_interaction.minute}", data: first_interaction.minute, uuid: first_interaction.uuid }
+        %table.pure-table.pure-table-horizontal.interaction-table
+          %tr
+            %td.number= "#{interaction_group.first.minute} - #{interaction_group.last.minute}"
+            %td= @summary.summary_code_string(from: interaction_group.first.minute, to: interaction_group.last.minute)
+            %td Task: #{@summary.on_task(from: interaction_group.first.minute, to: interaction_group.last.minute)}
+            %td
+              Technology:
+              = yes_no @summary.using_technology?(from: interaction_group.first.minute, to: interaction_group.last.minute), yes: 'Yes', no: 'No'
+            %td
+              = form_for first_interaction, html: { multipart: true } do |f|
+                = file_field_tag 'interaction[snapshots][][media]', class: 'hidden auto_upload', capture: 'camera', accept: 'image/*'
+                = link_to text_icon(:camera), '#', class: 'snapshot_upload'
+        %ul.list{id: "file_list_#{first_interaction.minute}", data: { minute: first_interaction.minute }}
+          = content_tag_for :li, @summary.snapshots(from: interaction_group.first.minute, to: interaction_group.last.minute) do |snapshot|
+            = image_tag snapshot.media.url(:thumb)
+    - else
+      - interaction_group.each do |interaction|
+        - # Else we display the individual interaction
+        %div.upload_drop{id: "upload_drop_#{interaction.minute}", data: { minute: interaction.minute, uuid: interaction.uuid }}
+          %table.pure-table.pure-table-horizontal.interaction-table
+            %tr
+              %td.number= interaction.minute
+              %td= interaction.code_string
+              %td Task: #{interaction.on_task}
+              %td
+                Technology:
+                = yes_no interaction.using_technology?, yes: 'Yes', no: 'No'
+              %td
+                = form_for interaction, html: { multipart: true } do |f|
+                  = file_field_tag 'interaction[snapshots][][media]', class: 'hidden auto_upload', capture: 'camera', accept: 'image/*'
+                  = link_to text_icon(:camera), '#', class: 'snapshot_upload'
+          %ul.list{id: "file_list_#{interaction.minute}", data: { minute: interaction.minute }}
+            = content_tag_for :li, interaction.snapshots do |snapshot|
+              = image_tag snapshot.media.url(:thumb)
+
+        - # Add form for any missing interactions
+        - if @missing_minutes.include? interaction.minute+1
+          - minute = interaction.minute+1
+          .interaction{id: "interaction_#{minute}"}
+            = form_tag Interaction.new, id: "interaction_#{minute}_form", class: 'interaction_forms', data: { minute: "#{minute}"} do
+              = hidden_field_tag 'interaction[observation_id]', @observation.id
+              = hidden_field_tag 'interaction[minute]', "#{minute}"
+              %table.record_observation{style: "width: 100%"}
+                %thead
+                  %tr
+                    %th{rowspan: 2} Minute
+                    %th{colspan: 7} Teacher
+                    %th{colspan: 7} Students
+                    %th{colspan: 6} Grouping
+                    %th{colspan: 5} Topic
+                  %tr
+                    - [:teacher, :students, :grouping, :topic].each do |type|
+                      - Interaction.send("values_for_#{type}").each do |value|
+                        %th= Interaction::CODE_KEYS[value]
+                %tbody
+                  %tr
+                    %td.number= minute
+                    - [:teacher, :students, :grouping, :topic].each do |type|
+                      - Interaction.send("values_for_#{type}").each do |value|
+                        %td.boolean{class: type.to_s}= check_box_tag "interaction[#{type}][]", value.to_s, false, id: "minute_#{minute}_#{type}_#{value}"
+                  %tr
+                    %th{rowspan: 2} Notes
+                    %td{colspan: 15, rowspan: 2}= text_area_tag "interaction[note]", '', size: '44x3'
+                    %th{colspan: 5} On-Task?
+                    %th{colspan: 5} Tech Used?
+                  %tr.extras
+                    %td.boolean{colspan: 5}= select_tag 'interaction[on_task]', options_for_select([['1 - Class On-Task',1],['2 - Few Students Off-Task',2],['3 - Many Students Off-Task',3]])
+                    %td.boolean{colspan: 5}
+                      = hidden_field_tag 'interaction[using_technology]', 0
+                      = check_box_tag 'interaction[using_technology]', 1 
+
+.controls.hidden
+  - grid do
+    - column width: 7, of: 8 do
+      .hidden
+        = primary_button 'View Summary', @observation
+      ! &nbsp;
+    - column width: 1, of: 8 do
+      = primary_button 'Save Interactions', '#', id: 'save_interactions'
+
+- # Add a new form for each minute
+%script{id: 'interaction-template', type: 'text/x-handlebars-template'}
+  .interaction{id: "interaction_{{minute}}"}
+    = form_tag Interaction.new, id: 'interaction_{{minute}}_form', class: 'interaction_forms', data: { minute: '{{minute}}'} do
+      = hidden_field_tag 'interaction[observation_id]', @observation.id
+      = hidden_field_tag 'interaction[minute]', '{{minute}}'
+      %table.record_observation{style: "width: 100%"}
+        %thead
+          %tr
+            %th{rowspan: 2} Minute
+            %th{colspan: 7} Teacher
+            %th{colspan: 7} Students
+            %th{colspan: 6} Grouping
+            %th{colspan: 5} Topic
+          %tr
+            - [:teacher, :students, :grouping, :topic].each do |type|
+              - Interaction.send("values_for_#{type}").each do |value|
+                %th= Interaction::CODE_KEYS[value]
+        %tbody
+          %tr
+            %td.number {{minute}}
+            - [:teacher, :students, :grouping, :topic].each do |type|
+              - Interaction.send("values_for_#{type}").each do |value|
+                %td.boolean{class: type.to_s}= check_box_tag "interaction[#{type}][]", value.to_s, false, id: "minute_{{minute}}_#{type}_#{value}"
+          %tr
+            %th{rowspan: 2} Notes
+            %td{colspan: 15, rowspan: 2}= text_area_tag "interaction[note]", '', size: '44x3'
+            %th{colspan: 5} On-Task?
+            %th{colspan: 5} Tech Used?
+          %tr.extras
+            %td.boolean{colspan: 5}= select_tag 'interaction[on_task]', options_for_select([['1 - Class On-Task',1],['2 - Few Students Off-Task',2],['3 - Many Students Off-Task',3]])
+            %td.boolean{colspan: 5}
+              = hidden_field_tag 'interaction[using_technology]', 0
+              = check_box_tag 'interaction[using_technology]', 1 
+
+- # Upon success, display this entry              
+%script{id: 'interaction-result', type: 'text/x-handlebars-template'}
+  %div.upload_drop{id: "upload_drop_{{ minute }}", data: { minute: "{{ minute }}", uuid: "{{ uuid }}"}}
+    %table.pure-table.pure-table-horizontal.interaction-table
+      %tr
+        %td.number {{ minute }}
+        %td {{ code_string }}
+        %td Task: {{ on_task }}
+        %td Technology: {{ using_technology }} 
+        %td
+          = form_tag '/interactions/{{ uuid }}', html: { multipart: true } do |f|
+            = file_field_tag 'interaction[snapshots][][media]', class: 'hidden auto_upload', capture: 'camera', accept: 'image/*'
+            = link_to text_icon(:camera), '#', class: 'snapshot_upload'
+
+    %ul.list{id: "file_list_{{minute}}", data: { minute: "{{ minute }}"}}
+
+- # Every 5 minutes, replace content of 4 interactions with this table:
+%script{id: 'interaction-summary', type: 'text/x-handlebars-template'}
+  %table.pure-table.pure-table-horizontal.interaction-table
+    %tr
+      %td.number {{ range }}
+      %td {{ code_string }}
+      %td Task: {{ on_task }}
+      %td Technology: {{ using_technology }}
+      %td
+        = form_tag '/interactions/{{ uuid }}', html: { multipart: true } do |f|
+          = file_field_tag 'interaction[snapshots][][media]', class: 'hidden auto_upload', capture: 'camera', accept: 'image/*'
+          = link_to text_icon(:camera), '#', class: 'snapshot_upload'

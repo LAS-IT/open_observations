@@ -1,0 +1,10 @@
+- resource_name = t("activerecord.models.user")
+%h2.content-subhead= pluralize @users.count, resource_name
+- grid do
+  - column width: 1, of: 2 do
+    ! &nbsp;
+  - column width: 1, of: 2, class: 'action-button' do
+    = primary_button t('modules.actions.defaults.new', resource: resource_name ), new_user_path, icon: :plus
+
+%hr
+= table_for @users.by_last_name, columns: [:first_name, :last_name, :roles]

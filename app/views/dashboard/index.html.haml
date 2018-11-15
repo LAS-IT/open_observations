@@ -1,0 +1,11 @@
+%h2.content-subhead Welcome to ProLearning, #{@user.full_name}
+.invite.hidden
+  %h3 Invite others to #{@user.school.name} on ProLearning+
+  %p Share the following codes to invite other to observe or participate as an instructor
+  %ul
+    %li
+      Teacher Code: 
+      %span#teacher_code= @user.school.teacher_code
+    %li
+      Observer Code:
+      %span#observer_code= @user.school.observer_code

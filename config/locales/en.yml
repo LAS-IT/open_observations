@@ -1,0 +1,151 @@
+en:
+
+  admin:
+    create:
+      success: 'Successfully Created %{model}'
+      failure: 'Failed to Create %{model}'
+    update:
+      success: 'Successfully Updated %{model}'
+      failure: 'Failed to Update %{model}'
+    deleted:
+      success: 'Successfully Deleted %{model}'
+      failure: 'Failed to Delete %{model}'
+
+  new: 'Create'
+  edit: 'Edit'
+  destroy: 'Delete'
+  save: 'Save'
+  cancel: 'Cancel'
+  no_records: 'No records return'
+  devise:
+    registrations:
+      new:
+        register_school: 'Register Your School'
+
+  activerecord:
+    models:
+      user: 'Account'
+      school: 'School' 
+      program: 'Academic Program'
+      department: 'Department'
+      teacher: 'Teacher'
+      course: 'Course'
+      observation: 'Observation'
+      interaction: 'Interaction'
+    attributes:
+      user:
+        first_name: 'First Name'
+        last_name: 'Last Name'
+        email: 'Email'
+        password: 'Password'
+        password_confirmation: 'Confirm Password'
+      school:
+        name: 'School Name'
+        town: 'City/Town'
+        country: 'Country'
+      program:
+        title: 'Title'
+        school_id: 'School'
+        departments: 'Departments'
+      department:
+        name: 'Name'
+        program_id: 'Program'
+        courses_count: 'Number of Courses'
+        description: 'Description'
+      teacher:
+        first_name: 'First Name'
+        last_name: 'Last Name'
+        school_id: 'School'
+        user_id: 'Prolearning Account'
+        registration_code: 'Registration Code'
+      course:
+        name: 'Course Name'
+        section: 'Section'
+        semester: 'Semester'
+        description: 'Description'
+        teacher_id: 'Teacher'
+        department_id: 'Department'
+      observation:
+        teacher_id: 'Teacher'
+        course_id: 'Course'
+        user_id: 'Observer'
+        observed_on: 'Date of Observation'
+        period: 'Period'
+        number_of_students: 'Students'
+        observer_confidence: 'Observer has Confidence in Observation'
+        observer_confidence_short: 'Confidence?'
+        feedback: 'Observer Feedback'
+        observation_recorded?: 'Completed?'
+        interactions_count: 'Interactions'
+
+  modules:
+    dashboard: 'Dashboard'
+    programs: 'Academic Programs'
+    departments: 'Departments'
+    teachers: 'Teachers'
+    observations: 'Observations'
+    focuses: 'Observation Focuses'
+    exit: 'Sign Out'
+    menu_header: 'ProLearning Observations'
+    users: 'Accounts'
+    actions:
+      defaults:
+        new: "Add a new %{resource}"
+        edit: "Edit %{resource}"
+        show: "%{resource}"
+        destroy: "Delete %{resource}"
+      programs:
+        new: 'Add an Academic Program'
+        edit: 'Edit Academic Program'
+        show: '%{program}'
+      observations:
+        new: 'Prepare Classroom Observation'
+        start: 'Begin a Real-time Observation'
+        continue: 'Continue a Real-time Observation'
+        record: 'Record a Previous Observation'
+        summaries: 'Observation Summaries Report'
+      interactions:
+        edit_block: 'Edit Interactions'
+
+  simple_form:
+    placeholders:
+      program:
+        title: 'Program Title'
+      department:
+        name: 'Department Name'
+      teacher:
+        first_name: 'First Name'
+        last_name: 'Last Name'
+      course:
+        name: 'Course Name'
+        teacher: 'Select an Existing Teacher'
+      focus:
+        name: 'Focus'
+    labels:
+      program:
+        title: 'Program Title'
+      department:
+        name: 'Department Name'
+        description: 'Description'
+      teacher:
+        first_name: 'First Name'
+        last_name: 'Last Name'
+      course:
+        name: 'Course Name'
+        teacher: 'Select an Existing Teacher'
+      focus:
+        name: 'Focus'
+      observation:
+        course_id: 'Course'
+        teacher_id: 'Teacher'
+        user_id: 'Observer'
+        observed_on: 'Date of Observation'
+        period: 'Period'
+        number_of_students: 'Number of Students'
+        observer_confidence: 'Observer Confidence'
+        feedback: 'Observer Feedback'
+      user:
+        role_ids: 'Role'
+
+    fieldsets:
+      observation: 'Observation Details'

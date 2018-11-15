@@ -1,0 +1,38 @@
+!!!
+%html
+  %head
+    %title ProLearning :: Becoming the Best Teachers We Can Be
+    %meta{name: 'keywords', content: 'prolearning professional development training'}
+    %meta{name: 'author', content: 'Leysin American School' }
+    = stylesheet_link_tag '//cdnjs.cloudflare.com/ajax/libs/pure/0.4.2/pure.css'
+    = stylesheet_link_tag '//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'
+    = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min.js'
+    = stylesheet_link_tag 'application', media: 'all', "data-turbolinks-track" => true
+    = javascript_include_tag 'application', "data-turbolinks-track" => true
+    = javascript_include_tag "//www.google.com/jsapi", "chartkick"
+    = csrf_meta_tags
+
+    :plain
+      <script type="text/javascript" src="//use.typekit.net/wcu1ugh.js"></script>
+      <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+  %body.pure-skin-prolearning
+    = prolearning_menu
+
+    #main
+      = yield :page_header
+      %header.header
+        %h1= page_title
+      .content
+        = display_flash
+        = yield      
+
+        %footer.pure-g
+          .pure-u-5-8.las-footer
+            %p
+              ! &copy; <span id='copyyear'>#{Date.today.year}</span> Leysin American School
+            %p= image_tag 'las.png', alt: 'Leysin American School', width: 300 
+          .pure-u-1-8
+            ! &nbsp;
+
+

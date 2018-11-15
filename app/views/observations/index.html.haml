@@ -1,0 +1,45 @@
+- if @incomplete_observations.any?
+  %h2.content-subhead= pluralize @incomplete_observations.count, "Incomplete #{t('activerecord.models.observation')}"
+  %table.pure-table.pure-table-horizontal
+    %thead
+      %tr
+        %th= t('activerecord.attributes.observation.teacher_id')
+        %th= t('activerecord.attributes.observation.course_id')
+        %th= t('activerecord.attributes.observation.user_id')
+        %th= t('activerecord.attributes.observation.observed_on')
+        %th= t('activerecord.attributes.observation.number_of_students')
+        %th= t('activerecord.attributes.observation.interactions_count')
+        %th
+    %tbody
+      = content_tag_for :tr, @incomplete_observations do |observation|
+        %td= observation.teacher
+        %td= link_to observation.course, observation.course
+        %td= observation.user
+        %td.date= observation.observed_on.to_s(:iso)
+        %td.number= observation.number_of_students
+        %td.number= observation.interactions_count
+        %td.action= object_actions observation
+
+- if can? :create, Observation
+  %p= primary_button t('modules.actions.observations.new'), new_observation_path, large: false
+
+%h2.content-subhead= pluralize @observations.count, "Complete #{t('activerecord.models.observation')}"
+%table.pure-table.pure-table-horizontal
+  %thead
+    %tr
+      %th= t('activerecord.attributes.observation.teacher_id')
+      %th= t('activerecord.attributes.observation.course_id')
+      %th= t('activerecord.attributes.observation.user_id')
+      %th= t('activerecord.attributes.observation.observed_on')
+      %th= t('activerecord.attributes.observation.number_of_students')
+      %th= t('activerecord.attributes.observation.observer_confidence_short')
+      %th
+  %tbody
+    = content_tag_for :tr, @observations do |observation|
+      %td= observation.teacher
+      %td= link_to observation.course, observation.course
+      %td= observation.user
+      %td.date= observation.observed_on.to_s(:iso)
+      %td.number= observation.number_of_students
+      %td.boolean= yes_no observation.observer_confidence?
+      %td.action= object_actions observation

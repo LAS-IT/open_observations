@@ -1,0 +1,8 @@
+= prolearning_menu_item :dashboard
+= prolearning_menu_item :observations, icon: :search if can? :read, Observation
+= prolearning_menu_item :programs, icon: :building_o, break: true  if can? :read, Program 
+= prolearning_menu_item :departments, icon: :group if can? :read, Department
+= prolearning_menu_item :courses, icon: :book if can? :read, Course
+= prolearning_menu_item :teachers, icon: :user if can? :read, Teacher
+= prolearning_menu_item :users, icon: :lock if can? :create, User
+= prolearning_menu_item 'Sign Out', destroy_user_session_path, html: { method: :delete }, break: true, icon: :sign_out

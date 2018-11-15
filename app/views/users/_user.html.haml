@@ -1,0 +1,5 @@
+= content_tag_for :tr, user do
+  %td= user.first_name
+  %td= user.last_name
+  %td= user.role_names
+  %td.action= object_actions user

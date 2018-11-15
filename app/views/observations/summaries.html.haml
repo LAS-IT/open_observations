@@ -1,0 +1,30 @@
+.content_subhead
+  %h3= t('modules.actions.observations.summaries')
+
+%h3 At-A-Glance
+%table.pure-table.pure-table-horizontal
+  %thead
+    %tr
+      %th
+      - @observation_summaries.each_with_index do |summary, i|
+        %th= link_to_if (can? :read, summary.observation), "Observation #{i+1}", summary.observation
+  %tbody
+    %tr
+      %th Teacher Talk
+      - @observation_summaries.each do |summary|
+        %th= pie_chart summary.teacher_counts, height: '150px', library: { pieSliceText: 'label', legend: { position: 'none' }, width: '250' }
+    %tr
+      %th Student Talk
+      - @observation_summaries.each do |summary|
+        %th= pie_chart summary.students_counts, height: '150px', library: { pieSliceText: 'label', legend: { position: 'none' }, width: '250' }
+    %tr
+      %th Grouping
+      - @observation_summaries.each do |summary|
+        %th= pie_chart summary.grouping_counts, height: '150px', library: { pieSliceText: 'label', legend: { position: 'none' }, width: '250' }
+    %tr
+      %th Topic
+      - @observation_summaries.each do |summary|
+        %th= pie_chart summary.topic_counts, height: '150px', library: { pieSliceText: 'label', legend: { position: 'none' }, width: '250' }
+
+%h3 Code Summaries
+

@@ -1,0 +1,8 @@
+= errors_for @department
+= simple_form_for [@program, @department], html: { class: 'pure-form pure-form-stacked'} do |f|
+  = field_set_tag t('activerecord.models.department') do
+    = f.association :program, collection: Program.accessible_by(current_ability).by_title, input_html: { class: 'chzn'}, disabled: @program.present?
+    = f.input :name
+    = f.input :description, input_html: { cols: 50, rows: 3 }
+
+  = submit_for @department, parent: @program

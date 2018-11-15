@@ -1,0 +1,12 @@
+- collection = @_controller.instance_variable_get("@#{params[:controller]}")
+- klass = params[:controller].classify
+- resource_name = t("activerecord.models.#{klass.underscore}")
+%h2.content-subhead= pluralize collection.count, resource_name
+- grid do
+  - column width: 1, of: 2 do
+    ! &nbsp;
+  - column width: 1, of: 2, class: 'action-button' do
+    = primary_button t('modules.actions.defaults.new', resource: resource_name), new_polymorphic_path(klass.constantize), icon: :plus
+
+%hr
+= table_for collection

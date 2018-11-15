@@ -1,0 +1,5 @@
+= content_tag_for :tr, teacher do
+  %td= teacher.first_name
+  %td= teacher.last_name
+  %td.number= teacher.courses.count
+  %td.action= object_actions teacher

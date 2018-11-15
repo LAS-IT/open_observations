@@ -1,0 +1,4 @@
+= content_tag_for :tr, program do
+  %td= program.title
+  %td.number= program.departments.count
+  %td.action= object_actions program

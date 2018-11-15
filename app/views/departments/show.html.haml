@@ -1,0 +1,16 @@
+= show_page_for [@program,@department]
+%hr
+- grid do
+  - column width: 1, of: 2 do
+    %h3= pluralize @department.courses.count, t('activerecord.models.course')
+  - column width: 1, of: 2, class: 'action-button' do
+    %p= primary_button t('modules.actions.defaults.new', resource: 'Course'), new_department_course_path(@department), icon: :plus
+= table_for @department.courses.by_name, columns: [:name, :section, :semester, :teacher]
+%hr
+- teacher_name = t("activerecord.models.teacher")
+- grid do
+  - column width: 1, of: 2 do
+    %h3= pluralize @department.teachers.count, teacher_name
+  - column width: 1, of: 2, class: 'action-button' do
+    %p= primary_button t('modules.actions.defaults.new', resource: teacher_name ), new_teacher_path, icon: :plus
+= table_for @department.teachers.by_last_name, columns: [:first_name, :last_name, :courses_count]

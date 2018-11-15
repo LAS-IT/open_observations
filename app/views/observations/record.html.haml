@@ -1,0 +1,38 @@
+.content_subhead 
+  %h3= t('modules.actions.observations.record')
+
+%hr
+= errors_for @observation
+= form_for @observation do |f|
+  = hidden_field_tag 'recording', '1'
+  %table.record_observation{style: "width: 100%"}
+    %thead
+      %tr
+        %th Minute
+        %th{colspan: 7} Teacher
+        %th{colspan: 7} Student
+        %th{colspan: 6} Grouping
+        %th{colspan: 5} Topic
+    %tbody
+      = f.fields_for :interactions do |int_f|
+        %tr.observations
+          %td.number{rowspan: 2}
+            = int_f.object.minute
+            = int_f.hidden_field :minute
+          - [:teacher, :students, :grouping, :topic].each do |type|
+            - Interaction.send("values_for_#{type}").each do |value|
+              %th{class: type.to_s}= Interaction::CODE_KEYS[value]  
+        %tr
+          - [:teacher, :students, :grouping, :topic].each do |type|
+            - Interaction.send("values_for_#{type}").each do |value|
+              %td.boolean{class: type.to_s}= int_f.check_box type, {multiple: true, checked: int_f.object.send("#{type}?", value)}, value.to_s
+        %tr
+          %th{rowspan: 2} Notes
+          %td{colspan: 15, rowspan: 2}= int_f.text_area :note, size: '44x3'
+          %th{colspan: 5} On-Task?
+          %th{colspan: 5} Tech Used?
+        %tr.extras
+          %td.boolean{colspan: 5}= int_f.select :on_task, options_for_select([['1 - Class On-Task',1],['2 - Few Students Off-Task',2],['3 - Many Students Off-Task',3]], int_f.object.on_task)
+          %td.boolean{colspan: 5}= int_f.check_box :using_technology, { checked: int_f.object.using_technology? }
+
+  = submit_for @observation, save_label: 'Save Observation'

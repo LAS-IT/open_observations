@@ -1,0 +1,10 @@
+%h2.content-subhead= pluralize @departments.count, t('activerecord.models.department')
+- grid do
+  - column width: 1, of: 2 do
+    ! &nbsp;
+  - column width: 1, of: 2, class: 'action-button' do
+    - if can? :create, Department
+      = primary_button t('modules.actions.defaults.new', resource: 'Department'), @new_path, icon: :plus
+
+%hr
+= table_for @departments.by_name, columns: [:name, :program, :courses_count]

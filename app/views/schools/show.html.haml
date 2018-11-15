@@ -1,0 +1,15 @@
+%h2.content-subhead= @school.name
+
+- grid do
+  - column width: 1, of: 3 do
+    %h5
+      = text_icon :lock, lg: true
+      = link_to t('activerecord.models.user').pluralize, users_path
+  - column width: 1, of: 3 do
+    %h5
+      = text_icon :building_o, lg: true
+      = link_to t('activerecord.models.program').pluralize, programs_path
+  - column width: 1, of: 3 do
+    %h5
+      = text_icon :search, lg: true
+      = link_to t('activerecord.models.observation').pluralize, observations_path

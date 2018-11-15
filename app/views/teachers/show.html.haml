@@ -1,0 +1,25 @@
+= show_page_for @teacher
+%hr
+%h3= pluralize Observation.accessible_by(current_ability).where(teacher_id: @teacher.id).count, t('activerecord.models.observation')
+
+= form_tag summaries_observations_path, class: 'pure-form' do
+  %table.pure-table.pure-table-horizontal.pure-table-striped
+    %thead
+      %tr
+        %th
+        %th= t('activerecord.attributes.observation.course')
+        %th= t('activerecord.attributes.observation.observer')
+        %th= t('activerecord.attributes.observation.observed_on')
+        %th= t('activerecord.attributes.observation.observation_recorded?')
+        %th
+    %tbody
+      = content_tag_for :tr, Observation.accessible_by(current_ability).where(teacher_id: @teacher.id).most_recent do |observation|
+        %td= check_box_tag 'observation_ids[]', observation.id
+        %td= link_to_object observation.course
+        %td= link_to_object observation.user
+        %td.date
+          %time{datetime: observation.observed_on.to_s(:iso)}= observation.observed_on.to_s
+        %td.number= yes_no observation.observation_recorded?
+        %td.action= object_actions observation
+        
+  = submit_for nil, skip_cancel: true, save_label: 'Generate Observations Summary'

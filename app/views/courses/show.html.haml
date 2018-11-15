@@ -1,0 +1,49 @@
+- grid do
+  - column width: 1, of: 2 do
+    %h2.content-subhead= t('modules.actions.defaults.show', resource: @course)
+  - column width: 1, of: 2, class: 'action-button' do
+    %p= primary_button t('modules.actions.defaults.edit', resource: 'Course'), edit_polymorphic_path([@department,@course]), icon: :pencil
+
+%dl.attributes
+  - [:teacher,:department,:section,:semester,:description].each do |attribute|
+    - unless @course.send(attribute).blank?
+      %dt= t("activerecord.attributes.course.#{attribute}")
+      %dd= @course.send(attribute)
+
+%hr
+
+- observation_label = t("activerecord.models.observation")
+- grid do
+  - column width: 1, of: 2 do
+    %h3= pluralize @course.observations.count, observation_label
+  - column width: 1, of: 2, class: 'action-button' do
+    %p= primary_button t('modules.actions.defaults.new', resource: observation_label ), new_course_observation_path(@course), icon: :plus
+
+= form_tag summaries_observations_path, class: 'pure-form' do
+  %table.pure-table.pure-table-horizontal.pure-table-striped
+    %thead
+      %tr
+        %th
+        %th= t('activerecord.attributes.observation.observer')
+        %th= t('activerecord.attributes.observation.observed_on')
+        %th= t('activerecord.attributes.observation.number_of_students')
+        %th= t('activerecord.attributes.observation.observation_recorded?')
+        %th
+    %tbody
+      - if @course.observations.any?
+        = content_tag_for :tr, @course.observations.most_recent do |observation|
+          %td
+            - if observation.observation_recorded?
+              = check_box_tag 'observation_ids[]', observation.id
+          %td= link_to_object observation.user
+          %td.date
+            %time{datetime: observation.observed_on.to_s(:iso)}= observation.observed_on.to_s
+          %td.number= observation.number_of_students
+          %td.number= yes_no observation.observation_recorded?
+          %td.action= object_actions observation
+      - else
+        %tr
+          %td.empty{colspan: 6}= link_to 'Begin an Observation', new_course_observation_path(@course)
+  - if @course.observations.any?
+    = submit_for nil, skip_cancel: true, save_label: 'Generate Observations Summary'
+
